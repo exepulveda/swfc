@@ -22,7 +22,7 @@ if __name__ == "__main__":
     
     lambda_values  = data[:,0]
     weights = data[:,1:]
-    n_weights = [np.count_nonzero(np.int8(row > 1.0/ND/2.0)) for row in weights]
+    n_weights = [np.count_nonzero(np.int8(row > 1.0/ND/4.0)) for row in weights]
     
     print(weights.shape)
     print(n_weights)

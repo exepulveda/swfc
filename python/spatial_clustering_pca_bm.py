@@ -60,7 +60,7 @@ if __name__ == "__main__":
         clusters_pca = clustering_pca.fit_predict(pca_X)
         #save data
         new_data = np.c_[locations,pca_X,clusters_pca]
-        np.savetxt("../data/{dataset}_clusters_pca_{nclusters}.csv".format(dataset=filename,nclusters=NC),new_data,delimiter=",",fmt="%.4f")
+        np.savetxt("../results/{dataset}_clusters_pca_{nclusters}.csv".format(dataset=filename,nclusters=NC),new_data,delimiter=",",fmt="%.4f")
         
         #stats
         setup_distances(scale,var_types,distances_cat=None,targets=None)

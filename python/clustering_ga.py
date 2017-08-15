@@ -40,7 +40,7 @@ class CentroidIndividual(object):
         for i in range(self.NC):
             for j in range(self.ND):
                 if not(self.min_values[j] <= self.centroid[i,j] <= self.max_values[j]):
-                    print(i,j,self.centroid[i,j])
+                    print(i,j,self.centroid[i,j],self.min_values[j],self.max_values[j])
                     assert False, "PROBLEM 2222"
         
     def __deepcopy__(self,memo):
@@ -69,7 +69,7 @@ def create_ga_centroids(data,weights,m,lambda_value,types,cat_values):
     return toolbox
     
 def mutate_centroid(ind,types,cat_values):
-    new_solution = ind.centroid
+    new_solution = ind.centroid.copy()
     
     NC,ND = new_solution.shape
 
@@ -80,6 +80,8 @@ def mutate_centroid(ind,types,cat_values):
 
     new_solution[sel_cluster,sel_dim] += np.random.normal(loc=0.0, scale=0.1)
     new_solution[sel_cluster,sel_dim] =  np.clip(new_solution[sel_cluster,sel_dim],ind.min_values[sel_dim],ind.max_values[sel_dim])
+
+    ind.centroid[:,:] = new_solution
 
     return ind,
     
@@ -195,7 +197,7 @@ def evaluate_centroid(ind,data,weights,m,lambda_value,verbose=0):
     ind.u = ret[1]
     return ret
     
-def evaluate(centroid,data,weights,m,lambda_value,verbose=0):
+def evaluate(centroid,data,weights,m,lambda_value,C=5.0,verbose=0):
     N,ND = data.shape
     NC,ND2 = weights.shape
     NC2,ND3 = centroid.shape
@@ -239,14 +241,14 @@ def evaluate(centroid,data,weights,m,lambda_value,verbose=0):
         
         assert False
         
-    #print('compactness',index1,'separation',min_cluster_distance)
+    #print('jm',jm,'separation',min_cluster_distance)
     
     #return index1 + 100.0/min_cluster_distance,jm,u
     #return index1/min_cluster_distance,jm,u
     if min_cluster_distance != 0.0:
-        return jm + 10.0/min_cluster_distance,u,index1,jm,min_cluster_distance
+        return jm + C/min_cluster_distance,u,index1,jm,min_cluster_distance
     else:
-        return jm + 10.0,u,index1,jm,min_cluster_distance
+        return jm + C,u,index1,jm,min_cluster_distance
     
 def optimize_centroids(data,current_solution,weights,m,lambda_value,types,cats,ngen=50,npop=50,cxpb=0.8,mutpb=0.2,stop_after=5,min_values=None,max_values=None,reg=2,verbose=False):
     '''

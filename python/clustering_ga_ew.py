@@ -193,7 +193,7 @@ def evaluate_centroid(ind,data,weights,m,lambda_value,verbose=0):
     ind.u = ret[1]
     return ret
     
-def evaluate(centroid,data,weights,m,lambda_value,verbose=0):
+def evaluate(centroid,data,weights,m,lambda_value,C=5.0,verbose=0):
     N,ND = data.shape
     ND2 = len(weights)
     NC,ND3 = centroid.shape
@@ -224,9 +224,9 @@ def evaluate(centroid,data,weights,m,lambda_value,verbose=0):
     #return index1 + 100.0/min_cluster_distance,jm,u
     #return index1/min_cluster_distance,jm,u
     if min_cluster_distance != 0.0:
-        return jm + 10.0/min_cluster_distance,u,index1,jm,min_cluster_distance
+        return jm + C/min_cluster_distance,u,index1,jm,min_cluster_distance
     else:
-        return jm + 10.0,u,index1,jm,min_cluster_distance
+        return jm + C,u,index1,jm,min_cluster_distance
     
 def optimize_centroids(data,current_solution,weights,m,lambda_value,types,cats,ngen=50,npop=50,cxpb=0.8,mutpb=0.2,stop_after=5,min_values=None,max_values=None,reg=2,verbose=False):
     '''

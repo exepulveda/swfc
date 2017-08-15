@@ -58,7 +58,7 @@ if __name__ == "__main__":
             
         #save data
         new_data = np.c_[locations,kmeans_clusters]
-        np.savetxt("../data/{dataset}_clusters_kmeans_{nc}.csv".format(dataset=filename,nc=NC),new_data,delimiter=",",fmt="%.4f")
+        np.savetxt("../results/{dataset}_clusters_kmeans_{nc}.csv".format(dataset=filename,nc=NC),new_data,delimiter=",",fmt="%.4f")
         
         #stats
         setup_distances(scale,var_types,distances_cat=None,targets=None)
