@@ -8,8 +8,9 @@ import scipy.stats
 
 from cluster_utils import fix_weights,recode_categorical_values
 
-attributes = ['RockType','Mgt','Hem','Ab','Act','Ap','Bt','O','F','Na','Mg','Al','Si','P','Cl','K','Ca','Ti','V','Mn','Fe','SG','Fe_Rec']
+#attributes = ['RockType','Mgt','Hem','Ab','Act','Ap','Bt','O','F','Na','Mg','Al','Si','P','Cl','K','Ca','Ti','V','Mn','Fe','SG','Fe_Rec']
 
+attributes = ['RockType','Mgt','Ab','Act','Ap','Bt','O','F','Na','Mg','Al','Si','P','Cl','K','Ca','Ti','V','Mn','Fe','SG','Fe_Rec']
 
 def setup_case_study_ore(inputfile=None,targets=None,a=0):
     if inputfile is None:
@@ -19,7 +20,7 @@ def setup_case_study_ore(inputfile=None,targets=None,a=0):
     locations = X[:,1:4]
     
     rocktype = [4]
-    mineralogy = [x for x in range(5,11)]
+    mineralogy = [5,7,8,9,10]
     elements = [x for x in range(11,25)]
     sg = [39]
     rec = [40]
@@ -60,7 +61,7 @@ def setup_case_study_all(inputfile=None,targets=None):
     locations = X[:,1:4]
     
     rocktype = [4]
-    mineralogy = [x for x in range(5,11)]
+    mineralogy = [5,7,8,9,10]
     elements = [x for x in range(11,25)]
     sg = [39]
     rec = [40]
@@ -105,4 +106,4 @@ def setup_distances(scale,var_types,use_cat=False,targets=None):
         cl.distances.set_categorical(1, 3,distances_cat)
 
     if targets is not None:
-        cl.distances.set_targeted(23,targets,False)
+        cl.distances.set_targeted(22,targets,False)

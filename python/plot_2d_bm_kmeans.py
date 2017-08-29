@@ -22,17 +22,12 @@ ny = ey-sy+1
 nz = ez-sz+1
 
 NC = 4
-#method = "swfc"
-method = "wfc"
-file_template = '../results/bm_{set}_%s_%d.csv'%(method,NC)
 
-best_centroids = np.loadtxt(file_template.format(set='centroids'),delimiter=",")
-best_weights = np.loadtxt(file_template.format(set='weights'),delimiter=",")
-best_u = np.loadtxt(file_template.format(set='u'),delimiter=",")
+file_template = np.int32(np.loadtxt('../results/final_bm_clusters_kmeans_%d.csv'%NC,delimiter=","))
 
-clusters = np.argmax(best_u,axis=1) 
+clusters = np.loadtxt(file_template,delimiter=",",dtype=np.int32)
 
-cluster_color = { 0: 50, 1: 100, 2: 150, 3: 200 }
+cluster_color = { 3: 50, 0: 100, 1: 150, 2: 200 }
 
 N,ND = data.shape
 
@@ -49,10 +44,11 @@ for k in range(nz):
         img[x-sx,y-sy] = cluster_color[clusters[ind]]
     
     ax.imshow(img, interpolation='nearest')
-    plt.savefig("../figures/projections/bm-xy-%d-%s"%(k+1,method))
+    plt.savefig("../figures/projections/bm-xy-%d-kmeans"%(k+1))
     plt.clf()
     plt.close('all')
-
+    if k == 24: quit()
+        
 #make images of all XZ for all Y
 for j in range(ny):
     fig,ax = plt.subplots()
@@ -64,7 +60,7 @@ for j in range(ny):
         img[x-sx,z-sz] = cluster_color[clusters[ind]]
     
     ax.imshow(img, interpolation='nearest')
-    plt.savefig("../figures/projections/bm-xz-%d-%s"%(j+1,method))
+    plt.savefig("../figures/projections/bm-xz-%d-kmeans"%(j+1))
     plt.clf()
     plt.close('all')
 
@@ -79,7 +75,7 @@ for i in range(ny):
         img[y-sy,z-sz] = cluster_color[clusters[ind]]
     
     ax.imshow(img, interpolation='nearest')
-    plt.savefig("../figures/projections/bm-yz-%d-%s"%(i+1,method))
+    plt.savefig("../figures/projections/bm-yz-%d-kmeans"%(i+1))
     plt.clf()
     plt.close('all')
     

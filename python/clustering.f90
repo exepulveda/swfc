@@ -345,22 +345,16 @@ function compactness_weighted(data,centroid,m,u,weights,regularization,lambda,jm
   !separation
   mean_distance = 0.0
   do i=1,NC
-    do j=1,NC
-      if (i /= j) then
-        do k=1,ND
-          weights_cluster(k) = max(weights(j,k),weights(i,k))
-        end do
+    do j=i+1,NC
+      do k=1,ND
+        weights_cluster(k) = max(weights(j,k),weights(i,k))
+      end do
 
-        d = distance_function(centroid(i,:),centroid(j,:),weights_cluster)
-
-        !if (verbose > 2) print *,i,j,d,mean_distance
-        !if (d < min_distance) then
-        !  min_distance = d
-        !end if
-        mean_distance = mean_distance + d
-      end if
+      d = distance_function(centroid(i,:),centroid(j,:),weights_cluster)
+      mean_distance = mean_distance + d
     end do
   end do
+  mean_distance = mean_distance * NC*(NC-1)/2.0
   if (verbose>0) print *,"mean_distance",mean_distance
 
   
@@ -421,16 +415,12 @@ function compactness_weighted_ew(data,centroid,m,u,weights,regularization,lambda
   !separation
   mean_distance = 0.0
   do i=1,NC
-    do j=1,NC
-      if (i /= j) then
-        d = distance_function(centroid(i,:),centroid(j,:),weights)
-        mean_distance = mean_distance + d
-        !if (d < min_distance) then
-        !  min_distance = d
-        !end if
-      end if
+    do j=i+1,NC
+      d = distance_function(centroid(i,:),centroid(j,:),weights)
+      mean_distance = mean_distance + d
     end do
   end do
+  mean_distance = mean_distance * NC*(NC-1)/2.0
   if (verbose) print *,"mean_distance",mean_distance
 
   

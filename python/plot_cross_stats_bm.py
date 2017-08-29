@@ -16,7 +16,7 @@ import scipy.stats
 
 import pandas as pd
 
-from bm_case_study import setup_case_study,bm_variables
+from case_study_bm import setup_case_study_ore, attributes
 
 def correlation_matrix(corr,labels):
     fig,ax = plt.subplots() 
@@ -37,18 +37,18 @@ def correlation_matrix(corr,labels):
 
 
 if __name__ == "__main__":
-    locations,data,scale,var_types,targets = setup_case_study()
+    locations,data,min_values,max_values,scale,var_types,categories = setup_case_study_ore()
 
     #'RockType','Mgt','Hem','Ab','Act','Ap','Bt','O','F','Na','Mg','Al','Si','P','Cl','K','Ca','Ti','V','Mn','Fe','SG','Fe_Rec']
+    #    0        1     2     3    4     5   6    7   8   9    10   11   12   13  14   15  16   17  18   19   20   21   22
 
-
-    variables = (0,1,3,8,10,20,21,22)
+    variables = (0,1,2,3,5,6,20,22)
     NV = len(variables)
     
     N,ND = data.shape
 
 
-    fig,axs = plt.subplots(NV,NV,figsize=(40,40))
+    fig,axs = plt.subplots(NV,NV,figsize=(30,30))
     fig.subplots_adjust(wspace=0.1)
 
     for i in range(NV):
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     for i,v in enumerate(variables):
         ax = axs[i,i]
         x = data[:,v]
-        ax.set_title(bm_variables[v])
+        ax.set_title(attributes[v])
         if var_types[v] != 3:
             n, bins, patches = ax.hist(x,color='blue', alpha=0.5,normed=True)
             
@@ -182,6 +182,6 @@ if __name__ == "__main__":
                 d = []
             
     #
-    plt.savefig("../../figures/bm_cross_stats.svg", format="svg")
-    plt.savefig("../../figures/bm_cross_stats.jpg", format="jpg")
+    #plt.savefig("../figures/bm_cross_stats.svg", format="svg")
+    plt.savefig("../figures/bm_cross_stats.jpg", format="jpg")
     

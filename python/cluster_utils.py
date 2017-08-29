@@ -200,8 +200,8 @@ def fix_weights(weights,force=None):
 def recode_categorical_values(values,cats,a=0.999):
     new_values = np.empty_like(values,dtype=np.float32)
     for i,c in enumerate(cats):
-        indices = np.where(values == c)[0]
-        #print(i,c,len(indices),i+a)
+        indices = np.where(values == int(c))[0]
+        print(i,c,len(indices),i+a)
         new_values[indices] = (i + a)
 
     return new_values

@@ -51,7 +51,7 @@ if __name__ == "__main__":
     
     print('var_types',var_types)
 
-    for NC in range(2,11):
+    for NC in range(2,1):
         #print("KMeans DB Index:",NC)
         clustering = KMeans(n_clusters=NC)
         kmeans_clusters = np.int8(clustering.fit_predict(data_std))
@@ -60,7 +60,7 @@ if __name__ == "__main__":
         centroids_F = np.asfortranarray(np.empty((NC,ND)),dtype=np.float32)
         
         #calculate centroids back 
-        print("Calculating centroids")
+        #print("Calculating centroids")
         for k in range(NC):
             indices = np.where(kmeans_clusters == k)[0]
             centroids_F[k,:] = np.mean(data[indices,:],axis=0)
@@ -71,7 +71,7 @@ if __name__ == "__main__":
         
         #stats
         setup_distances(scale,var_types,use_cat=True,targets=None)
-        print("setup_distances DONE")
+        #print("setup_distances DONE")
 
         #KMeans
         weights = np.asfortranarray(np.ones((NC,ND),dtype=np.float32)/ ND) 
@@ -85,8 +85,7 @@ if __name__ == "__main__":
         
 
     #
-    NC = 4
+    NC = 3
     clustering = KMeans(n_clusters=NC)
     kmeans_clusters = clustering.fit_predict(data)
-    new_data = np.c_[locations,kmeans_clusters]
     np.savetxt("../results/final_{dataset}_clusters_kmeans_{nc}.csv".format(dataset=filename,nc=NC),kmeans_clusters,delimiter=",",fmt="%.4f")

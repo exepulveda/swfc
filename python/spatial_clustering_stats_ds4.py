@@ -23,7 +23,7 @@ from cluster_utils import adjust_clusters
 if __name__ == "__main__":
     mpl.use('agg')
     filename = "ds4"
-    X = np.loadtxt("../../data/{dataset}_clusters.csv".format(dataset=filename),delimiter=",",skiprows=0)
+    X = np.loadtxt("../data/{dataset}_clusters.csv".format(dataset=filename),delimiter=",",skiprows=0)
     locations = X[:,0:2]
     values = X[:,2:6]
     true_clusters = X[:,6]
@@ -125,7 +125,7 @@ if __name__ == "__main__":
                           title='Confusion matrix K-Means',
                           cmap=plt.cm.Blues,xlabel="Predicted",ylabel="True")
                           
-    plt.savefig("../../figures/confusion-matrix-kmeans-ds4")
+    plt.savefig("../figures/confusion-matrix-kmeans-ds4")
     
     #PCA
     i = 2
@@ -140,7 +140,7 @@ if __name__ == "__main__":
                           normalize=True,
                           title='Confusion matrix PCA K-Means',
                           cmap=plt.cm.Blues,xlabel="Predicted",ylabel="True")
-    plt.savefig("../../figures/confusion-matrix-pca-ds4")
+    plt.savefig("../figures/confusion-matrix-pca-ds4")
     
     #FC
     i = 3
@@ -152,9 +152,9 @@ if __name__ == "__main__":
     fig, ax = plt.subplots() 
     plot_confusion_matrix(cm_fc, classes,
                           normalize=True,
-                          title='Confusion matrix SFC',
+                          title='Confusion matrix WFC',
                           cmap=plt.cm.Blues,xlabel="Predicted",ylabel="True")
-    plt.savefig("../../figures/confusion-matrix-fc-ds4")
+    plt.savefig("../figures/confusion-matrix-fc-ds4")
 
     #SFC
     i = 4
@@ -166,6 +166,6 @@ if __name__ == "__main__":
     fig, ax = plt.subplots() 
     plot_confusion_matrix(cm_sfc, classes,
                           normalize=True,
-                          title='Confusion matrix SFC',
+                          title='Confusion matrix SWFC',
                           cmap=plt.cm.Blues,xlabel="Predicted",ylabel="True")
-    plt.savefig("../../figures/confusion-matrix-sfc-ds4")
+    plt.savefig("../figures/confusion-matrix-sfc-ds4")

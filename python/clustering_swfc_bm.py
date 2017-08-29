@@ -20,17 +20,9 @@ from cluster_utils import fix_weights
 
 CHECK_VALID = False
 
-parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawTextHelpFormatter)
-
 from case_study_bm import attributes,setup_case_study_ore,setup_case_study_all,setup_distances
 
-parser.add_argument('-t', "--target",     action='store_true', dest="target", required=False, help="use target distance on recovery")
-parser.add_argument('-f', "--force",     action='store_true', dest="force", required=False, help="force weights")
-
 if __name__ == "__main__":
-    args = parser.parse_args()
-    
-
     locations,data,min_values,max_values,scale,var_types,categories = setup_case_study_ore(a=0.999)
     N,ND = data.shape
 
@@ -41,28 +33,26 @@ if __name__ == "__main__":
 
     seed = 1634120
 
-    if args.target:
-        targets = np.asfortranarray(np.percentile(values[:,-1], [25,50,75]),dtype=np.float32)
-        var_types[-1] = 2
+    targets = np.asfortranarray(np.percentile(data[:,-1], [15,50,85]),dtype=np.float32)
+    var_types[-1] = 2
+    
+    print('targets',targets)
     
     m = 2.0
     force=None
 
-    #targets = np.asfortranarray(np.percentile(values[:,-1], [15,50,85]),dtype=np.float32)
-    #print('targets',targets)
-
     verbose=1
     lambda_value = 0.25
     
-    filename_template = "../../data/bm_{tag}_%s_%s_sfc_{nc}.csv"%(args.target,args.force)
+    filename_template = "../results/bm_{tag}_swfc_{nc}.csv"
 
-    ngen=100
-    npop=100
+    ngen=300
+    npop=200
     cxpb=0.8
     mutpb=0.4
-    stop_after=10
+    stop_after=20
 
-    NC = 6
+    NC = 4
     np.random.seed(seed)
     random.seed(seed)
     cl.utils.set_seed(seed)
@@ -75,25 +65,19 @@ if __name__ == "__main__":
     distances_cat[2,2] = 0.0
     cl.distances.set_categorical(1, 3,distances_cat)
 
-    if args.target:
-        cl.distances.set_targeted(23,targets,False)
-        if args.force:
-            force = (22,0.2)
+    cl.distances.set_targeted(ND,targets,False)
+    force = (ND-1,0.15)
 
-
-    #initial centroids
-    kmeans_method = KMeans(n_clusters=NC,random_state=seed)
-    kmeans_method.fit(data)
-    
+    #initial centroids at random
+    indices = np.random.choice(N,size=NC,replace=False)
     current_centroids = np.asfortranarray(np.empty((NC,ND)))
-    current_centroids[:,:] = kmeans_method.cluster_centers_
+    current_centroids[:,:] = data[indices,:]
 
     #initial weights are uniform
     weights = np.asfortranarray(np.ones((NC,ND),dtype=np.float32)/ ND)
     
-    if args.target:
-        for c in range(NC):
-            weights[c,:] = fix_weights(weights[c,:],force=force)
+    for c in range(NC):
+        weights[c,:] = fix_weights(weights[c,:],force=force)
             
     for k in range(100):
         best_centroids,best_u,best_energy_centroids,best_jm,current_temperature,evals = clustering_ga.optimize_centroids(
@@ -165,3 +149,7 @@ if __name__ == "__main__":
     
     print("DB Index:",NC,ret_fc,ret_sill,sep=',')
     cl.distances.reset()
+
+
+#DB Index:,3,0.4793857932090759,0.7067791223526001
+#DB Index:,4,0.6776587963104248,0.6165844202041626

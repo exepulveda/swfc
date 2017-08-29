@@ -54,7 +54,7 @@ if __name__ == "__main__":
     data[:,0] += 0.999
     data_F = np.asfortranarray(data,dtype=np.float32)
 
-    for NC in range(2,11):
+    for NC in range(2,1):
         clustering_pca = KMeans(n_clusters=NC)
         clusters_pca = np.int8(clustering_pca.fit_predict(pca_X))
 
@@ -86,7 +86,7 @@ if __name__ == "__main__":
         
 
     #save data
-    NC = 4
+    NC = 3
     clustering_pca = KMeans(n_clusters=NC)
     clusters_pca = clustering_pca.fit_predict(pca_X)
     np.savetxt("../results/final_{dataset}_clusters_pca_{nclusters}.csv".format(dataset=filename,nclusters=NC),clusters_pca,delimiter=",",fmt="%.4f")
