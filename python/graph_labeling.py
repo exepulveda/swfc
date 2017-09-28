@@ -63,7 +63,6 @@ def graph_cut(locations,neighbourhood,prob,unary_constant=100.0,smooth_constant=
 
     unary_cost = -np.log(prob+1e-5)
 
-    #POUND
     smooth_cost = np.ones((nlabels,nlabels))
     for c1 in range(nlabels):
         smooth_cost[c1,c1] = 0
