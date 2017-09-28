@@ -51,7 +51,7 @@ if __name__ == "__main__":
     
     print('var_types',var_types)
 
-    for NC in range(2,1):
+    for NC in range(10,11):
         #print("KMeans DB Index:",NC)
         clustering = KMeans(n_clusters=NC)
         kmeans_clusters = np.int8(clustering.fit_predict(data_std))
@@ -64,7 +64,7 @@ if __name__ == "__main__":
         for k in range(NC):
             indices = np.where(kmeans_clusters == k)[0]
             centroids_F[k,:] = np.mean(data[indices,:],axis=0)
-            print(k,len(indices),centroids_F[k,:])
+            #print(k,len(indices),centroids_F[k,:])
         
         #new_data = np.c_[locations,kmeans_clusters]
         #np.savetxt("../results/{dataset}_clusters_kmeans_{nc}.csv".format(dataset=filename,nc=NC),new_data,delimiter=",",fmt="%.4f")

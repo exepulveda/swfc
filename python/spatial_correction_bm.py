@@ -25,7 +25,7 @@ if __name__ == "__main__":
     
     np.random.seed(seed)
     lambda_value = 0.25
-    NC = 4
+    NC = 3
     target = False
     force = False
     

@@ -4,6 +4,7 @@ import logging
 import collections
 import math
 import sys
+import argparse
 
 sys.path += ['..']
 
@@ -21,13 +22,7 @@ CHECK_VALID = False
 
 from case_study_bm import attributes,setup_case_study_ore,setup_case_study_all,setup_distances
 
-import argparse
-parser = argparse.ArgumentParser(description=__doc__,formatter_class=argparse.RawTextHelpFormatter)
-parser.add_argument('-c', "--clusters",action='store',type=int,default=2,dest="clusters",required=False,help="Number of clusters")
-
 if __name__ == "__main__":
-    args = parser.parse_args()    
-
     locations,data,min_values,max_values,scale,var_types,categories = setup_case_study_ore(a=0.999)
     N,ND = data.shape
 
@@ -38,17 +33,18 @@ if __name__ == "__main__":
 
     seed = 1634120
 
-    targets = np.asfortranarray(np.percentile(data[:,-1], [15,50,85]),dtype=np.float32)
-    var_types[-1] = 2
+    #targets = np.asfortranarray(np.percentile(data[:,-1], [15,50,85]),dtype=np.float32)
+    #var_types[-1] = 2
     
-    print('targets',targets)
+    #print('targets',targets)
     
     m = 2.0
+    force=None
 
     verbose=1
     lambda_value = 0.25
     
-    filename_template = "../results/bm_{tag}_wfc_{nc}.csv"
+    filename_template = "../results/bm_{tag}_swfc_{nc}_no_target.csv"
 
     ngen=300
     npop=200
@@ -56,7 +52,7 @@ if __name__ == "__main__":
     mutpb=0.4
     stop_after=20
 
-    NC = args.clusters
+    NC = 3
     np.random.seed(seed)
     random.seed(seed)
     cl.utils.set_seed(seed)
@@ -69,8 +65,9 @@ if __name__ == "__main__":
     distances_cat[2,2] = 0.0
     cl.distances.set_categorical(1, 3,distances_cat)
 
-    cl.distances.set_targeted(ND,targets,False)
-    force = (ND-1,0.15) #weight to target 15%
+    #cl.distances.set_targeted(23,targets,False)
+    #force = (22,0.15)
+    force = None
 
     #initial centroids at random
     indices = np.random.choice(N,size=NC,replace=False)
@@ -153,15 +150,3 @@ if __name__ == "__main__":
     
     print("DB Index:",NC,ret_fc,ret_sill,sep=',')
     cl.distances.reset()
-
-    filename_template = "../results/final_bm_{tag}_wfc_{nc}.csv"
-
-    np.savetxt(filename_template.format(tag='clusters',nc=NC),new_data,delimiter=",",fmt="%.4f")
-    np.savetxt(filename_template.format(tag='centroids',nc=NC),current_centroids,delimiter=",",fmt="%.4f")
-    np.savetxt(filename_template.format(tag='u',nc=NC),best_u,delimiter=",",fmt="%.4f")
-    np.savetxt(filename_template.format(tag='weights',nc=NC),best_weights,delimiter=",",fmt="%.4f")
-
-
-
-#DB Index:,3,0.4793857932090759,0.7067791223526001
-#DB Index:,4,0.6776587963104248,0.6165844202041626

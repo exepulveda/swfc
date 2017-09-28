@@ -54,7 +54,7 @@ if __name__ == "__main__":
     data[:,0] += 0.999
     data_F = np.asfortranarray(data,dtype=np.float32)
 
-    for NC in range(2,1):
+    for NC in range(10,11):
         clustering_pca = KMeans(n_clusters=NC)
         clusters_pca = np.int8(clustering_pca.fit_predict(pca_X))
 
@@ -64,7 +64,7 @@ if __name__ == "__main__":
         for k in range(NC):
             indices = np.where(clusters_pca == k)[0]
             centroids_F[k,:] = np.mean(data[indices,:],axis=0)
-            print(k,len(indices),centroids_F[k,:])
+            #print(k,len(indices),centroids_F[k,:])
 
         #save data
         new_data = np.c_[locations,clusters_pca]

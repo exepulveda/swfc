@@ -11,12 +11,12 @@ from case_study_bm import attributes,setup_case_study_ore,setup_distances
 
 import matplotlib.pyplot as plt
 
-from cluster_utils import adjust_clusters
+from cluster_utils import relabel
 
 
 
 if __name__ == "__main__":
-    NC = 4
+    NC = 3
 
 
     kmeans = np.int32(np.loadtxt('../results/final_bm_clusters_kmeans_%d.csv'%NC,delimiter=","))
@@ -25,8 +25,8 @@ if __name__ == "__main__":
     #fc = np.loadtxt('../results/final_2d_clusters_fc_4.csv',delimiter=",")
     #sfcew = np.loadtxt('../results/final_2d_clusters_sfcew_4.csv',delimiter=",")
     #swfc_no_target = np.loadtxt('../results/bm_clusters_swfc_3_no_target.csv',delimiter=",")[:,-1]
-    wfc  = np.int32(np.loadtxt('../results/bm_clusters_wfc_%d.csv'%NC,delimiter=",")[:,-1])
-    swfc = np.int32(np.loadtxt('../results/bm_clusters_swfc_%d.csv'%NC,delimiter=","))
+    wfc  = np.int32(np.loadtxt('../results/final_bm_clusters_wfc_%d.csv'%NC,delimiter=",")[:,-1])
+    swfc = np.int32(np.loadtxt('../results/final_bm_clusters_swfc_%d.csv'%NC,delimiter=","))
 
     locations,data,min_values,max_values,scale,var_types,categories = setup_case_study_ore()
 
@@ -37,24 +37,16 @@ if __name__ == "__main__":
     #names = ['kmeans','pca','fcew','sfcew','fc','sfc']
     names = ['kmeans','pca','WFC','SWFC']
     labels = ["All"] + ["C"+str(k+1) for k in range(NC)]
+
+    cluster_target = swfc
     
-    equivalences = {}
-
-    equivalences[0] = {0:0, 1:1, 2:2, 3:3}
-    equivalences[1] = {0:1, 1:3, 2:0, 3:2}
-    equivalences[2] = {0:2, 1:0, 2:1, 3:3}
-    equivalences[3] = {0:2, 1:0, 2:1, 3:3}
-
     clay_color = ['r','b','g','c','m','y']
 
     #for i,cluster in enumerate([kmeans,pca,fcew,sfcew,fc,sfc]):
     for i,cluster in enumerate([kmeans,pca,wfc,swfc]):
-        
-        if i in equivalences:
-            adjust_cluster = adjust_clusters(cluster,equivalences[i])
-        else:
-            adjust_cluster =  cluster
-                    
+
+        adjust_cluster = relabel(cluster_target,cluster,NC)
+
         for var in range(ND):
             fig, ax = plt.subplots(figsize=(6, 6)) 
             #ax.set_ylim([mins[v],maxs[v]])
@@ -94,7 +86,7 @@ if __name__ == "__main__":
 
                 bx = ax.boxplot(d,labels=labels,showmeans=True)
 
-            plt.savefig("../figures/boxplot-{var}-bm-{cm}".format(var=attributes[var],cm=names[i]),bbox_inches='tight')
+            plt.savefig("../figures/case_bm/boxplot-{var}-bm-{cm}".format(var=attributes[var],cm=names[i]),bbox_inches='tight')
             plt.close('all')
 
 #from case_study_bm import attributes,setup_case_study_ore,setup_case_study_all,setup_distances

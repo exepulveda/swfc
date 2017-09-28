@@ -205,6 +205,35 @@ def recode_categorical_values(values,cats,a=0.999):
         new_values[indices] = (i + a)
 
     return new_values
+
+
+import itertools
+import numpy as np
+
+
+def relabel(x,y,nclusters,verbose=False):
+    n = len(x)
+
+    z = np.empty_like(x)
+    
+    per = itertools.permutations(range(nclusters),nclusters)
+    min_diff = n
+    min_per = None
+    for k,indices in enumerate(per):
+        z.fill(-9)
+        #copy values of y in z but changing index
+        for i,j in enumerate(indices):
+            pos = np.where(y == i)[0]
+            z[pos] = j
+        #calculate difference compared to x
+        diff = np.count_nonzero(x != z)
+        if verbose: print(k,indices,diff,x,y,z)
+        if diff < min_diff:
+            min_per = z.copy()
+            min_diff = diff
+            
+    return min_per
+
     
 if __name__ == "__main__":
     

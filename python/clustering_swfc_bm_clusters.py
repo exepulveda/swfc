@@ -1,3 +1,7 @@
+'''
+This script perform WFC and SWFC for many clusters and calculate DB and Silhouette indices
+'''
+
 import sys
 import collections
 import sys
@@ -14,6 +18,9 @@ import clustering_ga
 from scipy.spatial.distance import pdist
 from sklearn.cluster import KMeans
 from cluster_utils import fix_weights
+
+from graph_labeling import graph_cut, make_neighbourhood
+from scipy.spatial import cKDTree
 
 CHECK_VALID = False
 
@@ -35,23 +42,26 @@ if __name__ == "__main__":
     #    var_types[-1] = 2
     
     m = 2.0
-    force=None
-
-    #targets = np.asfortranarray(np.percentile(values[:,-1], [15,50,85]),dtype=np.float32)
-    #print('targets',targets)
-
     verbose=0
     lambda_value = 0.25
     
-    filename_template = "../results/bm_{tag}_swfc_{nc}.csv"
+    filename_template = "../results/bm_{tag}_wfc_{nc}.csv"
 
-    ngen=50
-    npop=100
+    ngen=200
+    npop=200
     cxpb=0.8
     mutpb=0.4
-    stop_after=10
+    stop_after=40
 
+    targets = np.asfortranarray(np.percentile(data[:,-1], [15,50,85]),dtype=np.float32)
+    var_types[-1] = 2
 
+    force = (ND-1,0.15) #weight to target 15%
+
+    knn = 15
+    kdtree = cKDTree(locations)
+    neighbourhood,distances = make_neighbourhood(kdtree,locations,knn,max_distance=2.0)
+    distances = np.array(distances)
 
 
     for NC in range(2,11):
@@ -59,7 +69,7 @@ if __name__ == "__main__":
         random.seed(seed)
         cl.utils.set_seed(seed)
         
-        setup_distances(scale,var_types,use_cat=True,targets=None)
+        setup_distances(scale,var_types,use_cat=True,targets=targets)
 
         #initial centroids
         kmeans_method = KMeans(n_clusters=NC,random_state=seed)
@@ -75,7 +85,7 @@ if __name__ == "__main__":
         #    for c in range(NC):
         #        weights[c,:] = fix_weights(weights[c,:],force=force)
                 
-        for k in range(100):
+        for k in range(20):
             best_centroids,best_u,best_energy_centroids,best_jm,current_temperature,evals = clustering_ga.optimize_centroids(
                     data,
                     current_centroids,
@@ -143,5 +153,22 @@ if __name__ == "__main__":
         ret_fc = cl.clustering.dbi_index(centroid,data,clusters,weights)
         ret_sill= cl.clustering.silhouette_index(data,clusters,weights)
         
-        print("DB Index:",NC,ret_fc,ret_sill,sep=',')
+        print("WFC: DB,Sil:",NC,ret_fc,ret_sill,sep=',')
+
+        #Spatial correction
+        clusters_graph = np.int32(graph_cut(locations,neighbourhood,best_u,unary_constant=70.0,smooth_constant=15.0,verbose=0))
+        centroids_F = np.asfortranarray(np.empty((NC,ND)),dtype=np.float32)
+        
+        #calculate centroids back 
+        for k in range(NC):
+            indices = np.where(clusters_graph == k)[0]
+            centroids_F[k,:] = np.mean(data[indices,:],axis=0)
+        
+        clusters = np.asfortranarray(clusters_graph,dtype=np.int8)
+        ret_swfc_dbi = cl.clustering.dbi_index(centroids_F,data,clusters,weights)
+        ret_swfc_sill= cl.clustering.silhouette_index(data,clusters,weights)
+        print("SWFC: DB,Sil:",NC,ret_swfc_dbi,ret_swfc_sill,sep=',')
+        
         cl.distances.reset()
+        
+        
