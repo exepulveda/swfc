@@ -25,7 +25,7 @@ if __name__ == "__main__":
     #fc = np.loadtxt('../results/final_2d_clusters_fc_4.csv',delimiter=",")
     #sfcew = np.loadtxt('../results/final_2d_clusters_sfcew_4.csv',delimiter=",")
     #swfc_no_target = np.loadtxt('../results/bm_clusters_swfc_3_no_target.csv',delimiter=",")[:,-1]
-    wfc  = np.int32(np.loadtxt('../results/final_bm_clusters_wfc_%d.csv'%NC,delimiter=",")[:,-1])
+    wfc  = np.int32(np.loadtxt('../results/bm_clusters_wfc_%d.csv'%NC,delimiter=",")[:,-1])
     swfc = np.int32(np.loadtxt('../results/final_bm_clusters_swfc_%d.csv'%NC,delimiter=","))
 
     locations,data,min_values,max_values,scale,var_types,categories = setup_case_study_ore()
@@ -86,7 +86,7 @@ if __name__ == "__main__":
 
                 bx = ax.boxplot(d,labels=labels,showmeans=True)
 
-            plt.savefig("../figures/case_bm/boxplot-{var}-bm-{cm}".format(var=attributes[var],cm=names[i]),bbox_inches='tight')
+            plt.savefig("../figures/case_bm/boxplot-{var}-bm-{cm}.pdf".format(var=attributes[var],cm=names[i]),bbox_inches='tight')
             plt.close('all')
 
 #from case_study_bm import attributes,setup_case_study_ore,setup_case_study_all,setup_distances

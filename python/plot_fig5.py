@@ -7,9 +7,7 @@ import sys
 import json
 import matplotlib as mpl
 
-show = False
-    
-if not show: mpl.use('agg')
+mpl.use('agg')
 
 import matplotlib.pyplot as plt
 
@@ -17,13 +15,9 @@ import numpy as np
 import scipy.stats
 
 if __name__ == "__main__":
-    filename = "../data/sfc_weights_bm.csv"
     filename = "../data/wfc_weights_ds4.csv"
-    output = "../figures/case_ds4/fig5-ds4_weights.png"
+    output = "../figures/case_ds4/fig5-ds4_weights.pdf"
 
-
-
-    
     data = np.loadtxt(filename,delimiter=",",skiprows=1)
     
     N,ND = data.shape
@@ -54,7 +48,4 @@ if __name__ == "__main__":
     ax1.set_ylabel("Weight value")
     ax2.set_ylabel("Number of weights greater than %.2f"%(threshold,))
         
-    if show:
-        plt.show()
-    else:
-        plt.savefig(output,bbox_inches='tight')
+    plt.savefig(output,bbox_inches='tight')

@@ -34,5 +34,8 @@ ax2 = ax1.twinx()
 n_bins = 100
 
 ax2.hist(max_u,n_bins,normed=True, histtype='step', cumulative=True,color='red')
-plt.savefig("../figures/case_bm/u_hist_bm_%d.png"%NC)
-plt.clf()
+
+ax1.set_xlabel('Membership')
+ax1.set_ylabel('Frequeny')
+ax2.set_ylabel('Cumulated frequeny')
+plt.savefig("../figures/case_bm/fig10.pdf")
