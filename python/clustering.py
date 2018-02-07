@@ -3,6 +3,9 @@ from queue import Queue
 from scipy.spatial import cKDTree
 import logging
 
+
+    
+
 def energy(solution,values):
     logger = logging.getLogger("energy")    
     ret = 0.0

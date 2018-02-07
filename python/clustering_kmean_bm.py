@@ -51,7 +51,7 @@ if __name__ == "__main__":
     
     print('var_types',var_types)
 
-    for NC in range(10,11):
+    for NC in range(3,6):
         #print("KMeans DB Index:",NC)
         clustering = KMeans(n_clusters=NC)
         kmeans_clusters = np.int8(clustering.fit_predict(data_std))

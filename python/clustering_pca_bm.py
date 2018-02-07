@@ -54,7 +54,7 @@ if __name__ == "__main__":
     data[:,0] += 0.999
     data_F = np.asfortranarray(data,dtype=np.float32)
 
-    for NC in range(10,11):
+    for NC in range(3,6):
         clustering_pca = KMeans(n_clusters=NC)
         clusters_pca = np.int8(clustering_pca.fit_predict(pca_X))
 

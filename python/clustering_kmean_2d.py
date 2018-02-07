@@ -21,7 +21,7 @@ import clusteringlib as cl
 from case_study_2d import attributes,setup_case_study,setup_distances
 
 if __name__ == "__main__":
-    filename = 'bm'
+    filename = '2d'
 
     locations,ore_indices,locations_ore,data_ore,min_values,max_values,scale,var_types,categories = setup_case_study()
     
@@ -83,5 +83,13 @@ if __name__ == "__main__":
     NC = 4
     clustering = KMeans(n_clusters=NC)
     kmeans_clusters = clustering.fit_predict(data)
-    new_data = np.c_[locations,kmeans_clusters_all]
+    centroids = np.empty((NC,ND))
+    for k in range(NC):
+        indices = np.where(kmeans_clusters == k)[0]
+        centroids[k,:] = np.mean(values[indices,:],axis=0)
+
+    print('centroids',centroids)
+
+    new_data = np.c_[locations_ore,kmeans_clusters]
     np.savetxt("../results/final_{dataset}_clusters_kmeans_{nc}.csv".format(dataset=filename,nc=NC),kmeans_clusters,delimiter=",",fmt="%.4f")
+    np.savetxt("../results/final_{dataset}_centroids_kmeans_{nc}.csv".format(dataset=filename,nc=NC),centroids,delimiter=",",fmt="%.4f")

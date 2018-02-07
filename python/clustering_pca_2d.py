@@ -85,4 +85,14 @@ if __name__ == "__main__":
     NC = 4
     clustering_pca = KMeans(n_clusters=NC)
     clusters_pca = clustering_pca.fit_predict(pca_X)
+
+    centroids = np.empty((NC,ND))
+    for k in range(NC):
+        indices = np.where(clusters_pca == k)[0]
+        centroids[k,:] = np.mean(values[indices,:],axis=0)
+
+    print('centroids',centroids)
+
     np.savetxt("../results/final_{dataset}_clusters_pca_{nclusters}.csv".format(dataset=filename,nclusters=NC),clusters_pca,delimiter=",",fmt="%.4f")
+
+    np.savetxt("../results/final_{dataset}_centroids_pca_{nclusters}.csv".format(dataset=filename,nclusters=NC),centroids,delimiter=",",fmt="%.4f")

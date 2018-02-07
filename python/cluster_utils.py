@@ -4,6 +4,47 @@ import numpy as np
 import collections
 import math
 
+def crisp_centroids(data,clusters,nclusters,standadize=False):
+    N,ND = data.shape
+    N2 = len(clusters)
+    
+    assert N == N2, "number of dimensions wrong"
+
+    centroids = np.zeros((nclusters,ND),dtype=np.float32)
+
+    for i in range(nclusters):
+        #find clusters
+        indices = np.where(clusters == i)[0]
+        #calculate mean
+        centroids[i,:] = np.mean(data[indices,:],axis=0)
+        
+    return centroids
+
+def crisp_to_fuzzy(data,centroids,p=2):
+    N,ND = data.shape
+    NC,ND2 = centroids.shape
+    
+    assert ND == ND2, "number of dimensions wrong"
+
+    #Generate U matrix for kmeas
+    u = np.zeros((N,NC),dtype=np.float32)
+    d_tmp = np.zeros(NC)
+    for i in range(N):
+        datai = data[i]
+        
+        d_tmp.fill(0.0)
+        for j in range(NC):
+            centroidj = centroids[j]
+            #calculate distance between the data and the centroid
+            d_tmp[j] = np.linalg.norm(datai - centroidj)
+            
+        d_inv = 1.0/d_tmp**p
+        
+        #print(i,d_inv/np.sum(d_inv))
+        u[i,:] = d_inv/np.sum(d_inv)
+        
+    return u
+
 def kmeans(data,nclusters,distance_function,categorical = [4,5]):
     n,p = data.shape
     
